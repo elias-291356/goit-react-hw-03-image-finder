@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+
 import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
-// import style from './componets/Style.Module.css'
+import style from '../../Style.module.css'
 
 export const ImageGallery = ({ posts }) => {
   if (!Array.isArray(posts)) {
@@ -8,11 +9,10 @@ export const ImageGallery = ({ posts }) => {
   }
   return (
     <div>
-      <ul className="gallery">
-        {posts.map((post) => (
-          <ImageGalleryItem
-            key={post.id}
-            post={post} />
+      <ul className={style.ImageGallery}>
+
+        {posts.map((post, id) => (
+          <ImageGalleryItem key={id} post={post} />
         ))}
       </ul>
     </div>

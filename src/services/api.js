@@ -15,8 +15,7 @@ export const requestPosts = async (query = 'cat', page = 1) => {
       image_type: 'photo',
       orientation: 'horizontal',
       per_page: 12,
-      // webformatUR: '',
-      // largeImageURL: '',
+
     }
   });
   return data;

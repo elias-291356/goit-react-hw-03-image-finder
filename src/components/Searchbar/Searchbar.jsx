@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-
+import style from '../../Style.module.css'
 export class Searchbar extends Component {
 
   state = {
 
-    title: '',
+    inputValue: '',
   }
   onInputChange = event => {
 
@@ -12,31 +12,36 @@ export class Searchbar extends Component {
 
   };
 
+  onSubmit = event => {
+    event.preventDefault();
+    this.props.handleSubmit(this.state.inputValue)
+  }
 
 
 
 
   render() {
-    const { onClickSubmitBtn } = this.props;
-    const { title } = this.state;
-    console.log(this.state);
+    // const { onClickSubmitBtn } = this.props;
+    // const { inputValue } = this.state;
+    // console.log(this.state);
     return (
       <div>
-        <header className="searchbar">
-          <form className="form" onSubmit={onClickSubmitBtn}>
-            <button type="submit" className="button">
-              <span className="button-label"
+        <header className={style.Searchbar}>
+          <form className={style.SearchForm} onSubmit={this.onSubmit}>
+            {/* <form className="form" > */}
+            <button type="submit" className={style.SearchFormButton}>
+              <span className={style.SearchFormButtonLabel}
               >Search</span>
             </button>
             <input
-              className="input"
+              className={style.SearchFormInput}
               type="text"
               autoComplete="off"
               autoFocus
               placeholder="Search images and photos"
               onChange={this.onInputChange}
-              value={this.state.title}
-              name='title'
+              value={this.state.inputValue}
+              name='inputValue'
             />
           </form>
         </header>
