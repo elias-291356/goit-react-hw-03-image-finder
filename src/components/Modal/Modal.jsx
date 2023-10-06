@@ -2,7 +2,7 @@
 
 import { Component } from "react";
 import style from './Modal.module.css'
-import * as basicLightbox from 'basiclightbox'
+
 export class Modal extends Component {
 
   handleKeydown = event => {
@@ -31,7 +31,10 @@ export class Modal extends Component {
       <div className={style.overlay} onClick={this.handlOverlayClick}>
         <div className={style.modal}>
           <div>
-            <img src={this.props.data} alt="Large Image" />
+
+            <img src={this.props.data} alt="somebody" />
+
+
           </div>
         </div>
       </div>

@@ -4,16 +4,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
-import { Loader } from './Loader/Loader';
 import { Modal } from './Modal/Modal';
 import { requestPosts } from 'services/api';
-
+import { Loader } from './Loader/Loader';
 export class App extends Component {
   state = {
+    error: null,
     posts: [],
     query: '',
     page: 1,
-    loading: false,
+    isLoading: false,
     modal: {
       isOpen: false,
       modalData: null,
@@ -22,35 +22,41 @@ export class App extends Component {
 
   fetchPosts = async () => {
     try {
+      this.setState({
+        isLoading: true,
+      });
+
       const response = await requestPosts(this.state.query, this.state.page);
       console.log(response);
-      this.setState({ posts: response.hits });
+      this.setState(prevState => ({
+        posts: this.state.page > 1 ? [...prevState.posts, ...response.hits] : response.hits,
+      }));
     } catch (error) {
-      // Обработка ошибки при загрузке данных
+      this.setState({ error: error.message });
+
+    } finally {
+      this.setState({
+        isLoading: false,
+
+      });
     }
   }
-
- 
-
 
   async componentDidUpdate(prevProps, prevState) {
-
     if (prevState.query !== this.state.query || prevState.page !== this.state.page) {
-      const { hits } = await requestPosts(this.state.query, this.state.page);
-      this.setState(prevState => ({
-        posts: [...prevState.posts, ...hits],
-      }));
+      this.fetchPosts()
     }
   }
-
   handleSubmit = (inputValue) => {
     this.setState({
       query: inputValue,
+      page: 1,
     })
   };
 
   onClickLoadMore = () => {
     this.setState({ page: this.state.page + 1 })
+
   }
 
   onOpenModal = (modalData) => {
@@ -77,10 +83,14 @@ export class App extends Component {
         <Searchbar
           handleSubmit={this.handleSubmit}
         />
+        <Loader
+          loading={this.state.isLoading}
+          error={this.state.error} />
         <ImageGallery
           posts={this.state.posts}
           onOpenModal={this.onOpenModal}
         />
+
         <ToastContainer />
         <Button
           onClickLoadMore={this.onClickLoadMore}
@@ -102,10 +112,3 @@ export class App extends Component {
 
 
 
-  //  когда я в inputValu  ввожу на страничке , то у меня при сабмите меняется state  inputValue, но не сам по себе ему нужно сделать
-  // setState({ сказать ему что Query теперь: inputValue });
-  // а если меняется state, тогда выполняется componentDidUpdate, а  componentDidUpdate - это у меня повторный запрос на сервер fetchPosts,
-  // с учетом нового значения, который ввеи в инпут
-  //  componentDidUpdate - принимает prevProps, prevState, и ему нужно сделать сравнение , если значение  параметра query не равно значению query,
-  // которое  у нас по умолчанию в первичном запросе 
-  //  тогда выполнить запрос, с учетом нового значения инпута
