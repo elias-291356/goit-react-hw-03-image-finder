@@ -1,6 +1,5 @@
 import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 const BASE_URL = "https://pixabay.com/api";
 const API_KEY = '39426539-25d6a4c73590ef834cf050f72';
 const instance = axios.create({ baseURL: BASE_URL });
