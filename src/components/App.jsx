@@ -3,13 +3,10 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
-import { requestPosts } from 'services/api';
-import { queryByRole } from '@testing-library/react';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
 import { Modal } from './Modal/Modal';
-
+import { requestPosts } from 'services/api';
 
 export class App extends Component {
   state = {
@@ -21,7 +18,6 @@ export class App extends Component {
       isOpen: false,
       modalData: null,
     },
-    largeImageURL: '',
   }
 
   fetchPosts = async () => {
@@ -30,62 +26,41 @@ export class App extends Component {
       console.log(response);
       this.setState({ posts: response.hits });
     } catch (error) {
+      // Обработка ошибки при загрузке данных
     }
-  }
-  handleKeydown = event => {
-    if (event.code === "Escape") {
-      console.log('open')
-      this.onCloseModal()
-    }
-  }
-  componentDidMount() {
-    this.fetchPosts();
-    window.addEventListener('keydown', this.handleKeydown);
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeydown);
-  }
  
 
 
   async componentDidUpdate(prevProps, prevState) {
-    if (prevState.query !== this.state.query  || prevState.page !== this.state.page) { 
-      const { hits } = await requestPosts(this.state.query,this.state.page);
+
+    if (prevState.query !== this.state.query || prevState.page !== this.state.page) {
+      const { hits } = await requestPosts(this.state.query, this.state.page);
       this.setState(prevState => ({
-        posts: [...prevState.posts,...hits],
+        posts: [...prevState.posts, ...hits],
       }));
     }
   }
-
-
 
   handleSubmit = (inputValue) => {
     this.setState({
       query: inputValue,
     })
   };
+
   onClickLoadMore = () => {
     this.setState({ page: this.state.page + 1 })
-
   }
 
-
-
-
-
- onOpenModal = (modalData) => {
-
-    
-
+  onOpenModal = (modalData) => {
     this.setState({
       modal: {
         isOpen: true,
         modalData: modalData
       }
     })
-    console.log(11111111111)
-}
+  }
 
   onCloseModal = () => {
     this.setState({
@@ -95,11 +70,6 @@ export class App extends Component {
       }
     });
   }
-
-
-  
-
-
 
   render() {
     return (
@@ -117,16 +87,14 @@ export class App extends Component {
         />
         {this.state.modal.isOpen === true && (
           <Modal
-            data={'hello from modal'}
+            data={this.state.modal.modalData}
             onCloseModal={this.onCloseModal}
           />
         )}
       </div>
     );
   }
-
 }
-
 
 
 

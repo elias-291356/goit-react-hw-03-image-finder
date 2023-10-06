@@ -195,9 +195,7 @@ img {
 * Стили компонента Buton (Load more)
 */
 .Button {
-  margin-bottom: 50px;
-  margin-top: 50px;
-  margin-left: 525px;
+
   padding: 8px 16px;
   border-radius: 2px;
   background-color: #3f51b5;
@@ -227,5 +225,7 @@ img {
 }
 
 .containerBtn {
+  display: flex;
+  justify-content: center;
   margin-top: 100px;
 }
