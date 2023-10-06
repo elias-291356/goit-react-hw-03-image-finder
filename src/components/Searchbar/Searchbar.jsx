@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import style from '../../Style.module.css'
+
 export class Searchbar extends Component {
 
   state = {
-
     inputValue: '',
   }
+
   onInputChange = event => {
-
     this.setState({ [event.target.name]: event.target.value });
-
   };
 
   onSubmit = event => {
@@ -28,7 +27,6 @@ export class Searchbar extends Component {
       <div>
         <header className={style.Searchbar}>
           <form className={style.SearchForm} onSubmit={this.onSubmit}>
-            {/* <form className="form" > */}
             <button type="submit" className={style.SearchFormButton}>
               <span className={style.SearchFormButtonLabel}
               >Search</span>
@@ -44,6 +42,7 @@ export class Searchbar extends Component {
               name='inputValue'
             />
           </form>
+
         </header>
       </div>
     );

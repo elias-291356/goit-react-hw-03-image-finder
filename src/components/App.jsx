@@ -6,11 +6,9 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { requestPosts } from 'services/api';
 import { queryByRole } from '@testing-library/react';
-
-
-
-
-
+import { Button } from './Button/Button';
+import { Loader } from './Loader/Loader';
+import { Modal } from './Modal/Modal';
 
 
 export class App extends Component {
@@ -19,8 +17,11 @@ export class App extends Component {
     query: '',
     page: 1,
     loading: false,
-
-
+    modal: {
+      isOpen: false,
+      modalData: null,
+    },
+    largeImageURL: '',
   }
 
   fetchPosts = async () => {
@@ -31,35 +32,32 @@ export class App extends Component {
     } catch (error) {
     }
   }
-  //  finally {
-  //   this.setState({ loading: false });
-  // }
-
+  handleKeydown = event => {
+    if (event.code === "Escape") {
+      console.log('open')
+      this.onCloseModal()
+    }
+  }
   componentDidMount() {
-    // this.setState({ loading: true })
     this.fetchPosts();
+    window.addEventListener('keydown', this.handleKeydown);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeydown);
+  }
+ 
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.query !== this.state.query) {
-      this.fetchPosts();
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (prevState.query !== this.state.query  || prevState.page !== this.state.page) { 
+      const { hits } = await requestPosts(this.state.query,this.state.page);
+      this.setState(prevState => ({
+        posts: [...prevState.posts,...hits],
+      }));
     }
   }
 
-
-
-
-
-
-  // onAddPost = formData => {
-  //   const post = {
-  //     ...formData, id: Math.random()
-
-  //   };
-
-  //   this.setState({ posts: [...this.state.posts, post] });
-  // };
 
 
   handleSubmit = (inputValue) => {
@@ -67,44 +65,66 @@ export class App extends Component {
       query: inputValue,
     })
   };
+  onClickLoadMore = () => {
+    this.setState({ page: this.state.page + 1 })
 
+  }
+
+
+
+
+
+ onOpenModal = (modalData) => {
+
+    
+
+    this.setState({
+      modal: {
+        isOpen: true,
+        modalData: modalData
+      }
+    })
+    console.log(11111111111)
+}
+
+  onCloseModal = () => {
+    this.setState({
+      modal: {
+        isOpen: false,
+        modalData: null,
+      }
+    });
+  }
+
+
+  
 
 
 
   render() {
     return (
-      <div
-        // style={{
-        //   height: '100vh',
-        //   display: 'flex',
-        //   justifyContent: 'center',
-        //   alignItems: 'center',
-        //   fontSize: 40,
-        //   color: '#010101'
-        // }}
-      >
-
-
-
-
+      <div>
         <Searchbar
-          // onClickSubmitBtn={this.handleSubmit}
           handleSubmit={this.handleSubmit}
         />
         <ImageGallery
-
-          // onAddPost={this.onAddPost}
           posts={this.state.posts}
-
-        // map={this.state.posts.map}
-        // loading={this.state.loading}
+          onOpenModal={this.onOpenModal}
         />
-
-
         <ToastContainer />
+        <Button
+          onClickLoadMore={this.onClickLoadMore}
+        />
+        {this.state.modal.isOpen === true && (
+          <Modal
+            data={'hello from modal'}
+            onCloseModal={this.onCloseModal}
+          />
+        )}
       </div>
     );
   }
+
 }
 
 
